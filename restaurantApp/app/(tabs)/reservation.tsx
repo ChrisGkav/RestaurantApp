@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Alert, StyleSheet, Platform, TouchableOpacity, } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import {
+  View,
+  Text,
+  TextInput,
+  Alert,
+  StyleSheet,
+  Platform,
+  TouchableOpacity,
+} from 'react-native';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -9,28 +17,39 @@ const LIGHT_PURPLE = '#ece9ff';
 
 export default function ReservationScreen() {
   const [date, setDate] = useState(new Date());
-  const [showPicker, setShowPicker] = useState(false);
+  const [isPickerVisible, setPickerVisible] = useState(false);
   const [people, setPeople] = useState('');
   const [restaurantId, setRestaurantId] = useState<string>('');
   const [restaurants, setRestaurants] = useState<any[]>([]);
   const [userId, setUserId] = useState<string>('');
 
+  // Fetch restaurants 
   useEffect(() => {
     (async () => {
       try {
         const res = await fetch('http://192.168.1.37:5000/restaurants');
         const data = await res.json();
         setRestaurants(data);
-        if (data.length) setRestaurantId(data[0].restaurant_id);
+        if (data.length) setRestaurantId(data[0].restaurant_id.toString());
       } catch {
         Alert.alert('Error loading restaurants');
       }
     })();
   }, []);
 
+  // Load logged-in userId
   useEffect(() => {
-    AsyncStorage.getItem('userId').then(id => id && setUserId(id));
+    AsyncStorage.getItem('userId').then(id => {
+      if (id) setUserId(id);
+    });
   }, []);
+
+  const showPicker = () => setPickerVisible(true);
+  const hidePicker = () => setPickerVisible(false);
+  const handleConfirm = (selectedDate: Date) => {
+    setDate(selectedDate);
+    hidePicker();
+  };
 
   const handleReservation = async () => {
     if (!people || !restaurantId) {
@@ -42,11 +61,11 @@ export default function ReservationScreen() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          user_id: parseInt(userId),
-          restaurant_id: parseInt(restaurantId),
+          user_id: parseInt(userId, 10),
+          restaurant_id: parseInt(restaurantId, 10),
           date: date.toISOString().split('T')[0],
           time: date.toTimeString().split(' ')[0].slice(0, 5),
-          people_count: parseInt(people),
+          people_count: parseInt(people, 10),
         }),
       });
       const data = await res.json();
@@ -64,13 +83,13 @@ export default function ReservationScreen() {
   return (
     <View style={styles.screen}>
       <View style={styles.card}>
-        <Text style={styles.title}>🍷 Make a Reservation</Text>
+        <Text style={styles.title}>🍷 Make a Reservation</Text>
 
         <Text style={styles.label}>Restaurant</Text>
         <View style={styles.pickerWrap}>
           <Picker
             selectedValue={restaurantId}
-            onValueChange={setRestaurantId}
+            onValueChange={value => setRestaurantId(value)}
             style={styles.picker}
             dropdownIconColor={PURPLE}
           >
@@ -84,24 +103,17 @@ export default function ReservationScreen() {
           </Picker>
         </View>
 
-        <Text style={styles.label}>Date & Time</Text>
-        <TouchableOpacity
-          style={styles.dateBtn}
-          onPress={() => setShowPicker(true)}
-        >
+        <Text style={styles.label}>Date & Time</Text>
+        <TouchableOpacity style={styles.dateBtn} onPress={showPicker}>
           <Text style={styles.dateTxt}>{date.toLocaleString()}</Text>
         </TouchableOpacity>
-        {showPicker && (
-          <DateTimePicker
-            value={date}
-            mode="datetime"
-            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-            onChange={(_, sel) => {
-              sel && setDate(sel);
-              setShowPicker(false);
-            }}
-          />
-        )}
+        <DateTimePickerModal
+          isVisible={isPickerVisible}
+          mode="datetime"
+          date={date}
+          onConfirm={handleConfirm}
+          onCancel={hidePicker}
+        />
 
         <Text style={styles.label}>People</Text>
         <TextInput
@@ -109,7 +121,7 @@ export default function ReservationScreen() {
           keyboardType="number-pad"
           value={people}
           onChangeText={setPeople}
-          placeholder="π.χ. 2"
+          placeholder="π.χ. 2"
           placeholderTextColor="#888"
         />
 
@@ -124,7 +136,7 @@ export default function ReservationScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#ece9ff',
+    backgroundColor: LIGHT_PURPLE,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
@@ -161,7 +173,10 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     overflow: 'hidden',
   },
-  picker: { height: 50, color: '#333' },
+  picker: {
+    height: 50,
+    color: '#333',
+  },
   dateBtn: {
     backgroundColor: LIGHT_PURPLE,
     borderRadius: 10,
@@ -170,7 +185,10 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 6,
   },
-  dateTxt: { fontSize: 16, color: '#333' },
+  dateTxt: {
+    fontSize: 16,
+    color: '#333',
+  },
   input: {
     backgroundColor: LIGHT_PURPLE,
     borderRadius: 10,

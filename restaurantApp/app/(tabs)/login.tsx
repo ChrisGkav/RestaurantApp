@@ -12,6 +12,7 @@ interface DecodedToken {
   iat: number;
 }
 
+// Creating the Login Form Page
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

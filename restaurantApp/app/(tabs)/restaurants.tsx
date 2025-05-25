@@ -9,7 +9,6 @@ interface Restaurant {
   description: string;
 }
 
-/* ---------- Colors ---------- */
 const PURPLE = '#6933ff';
 const LIGHT_PURPLE = '#ece9ff';
 
@@ -26,7 +25,7 @@ export default function RestaurantsScreen() {
   const [newLoc, setNewLoc] = useState('');
   const [newDesc, setNewDesc] = useState('');
 
-  /* ---------- load token / role ---------- */
+  /* --- load token / role --- */
   useEffect(() => {
     (async () => {
       setToken(await AsyncStorage.getItem('token'));
@@ -34,7 +33,7 @@ export default function RestaurantsScreen() {
     })();
   }, []);
 
-  /* ---------- fetch list ---------- */
+  /* --- fetch list --- */
   useEffect(() => {
     (async () => {
       try {
@@ -48,7 +47,7 @@ export default function RestaurantsScreen() {
     })();
   }, []);
 
-  /* ---------- delete (admin) ---------- */
+  /* --- delete (admin) --- */
   const deleteRestaurant = (id: number) => {
     Alert.alert('Delete?', '', [
       { text: 'Cancel', style: 'cancel' },
@@ -78,7 +77,7 @@ export default function RestaurantsScreen() {
     ]);
   };
 
-  /* ---------- add (admin) ---------- */
+  /* --- add (admin) --- */
   const addRestaurant = async () => {
     if (!newName || !newLoc || !newDesc) {
       Alert.alert('Fill all fields');
@@ -115,7 +114,7 @@ export default function RestaurantsScreen() {
     }
   };
 
-  /* ---------- list ---------- */
+  /* --- list --- */
   const list = restaurants.filter(r =>
     (r.name + r.location).toLowerCase().includes(search.toLowerCase())
   );
@@ -134,14 +133,14 @@ export default function RestaurantsScreen() {
         onChangeText={setSearch}
       />
 
-      {/* ---------- Add button ---------- */}
+      {/* --- Add button --- */}
       {role === 'admin' && !showAdd && (
         <TouchableOpacity style={styles.addBtn} onPress={() => setShowAdd(true)}>
           <Text style={styles.addTxt}>+ Add Restaurant</Text>
         </TouchableOpacity>
       )}
 
-      {/* ---------- Add form ---------- */}
+      {/* --- Add form --- */}
       {showAdd && (
         <View style={styles.card}>
           <Text style={[styles.name, { marginBottom: 10 }]}>New Restaurant</Text>
@@ -200,7 +199,7 @@ export default function RestaurantsScreen() {
   );
 }
 
-/* ---------- Styles ---------- */
+/* --- Styles --- */
 const styles = StyleSheet.create({
   screen: {
     flex: 1,

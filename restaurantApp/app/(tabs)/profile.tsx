@@ -17,7 +17,7 @@ export default function ProfileScreen() {
     const [reservations, setReservations] = useState<Reservation[]>([]);
     const [refreshing, setRefreshing] = useState(false);
 
-    /* ---------- Fetch only this‑user reservations ---------- */
+    /* --- Fetch only this‑user reservations --- */
     const fetchReservations = useCallback(async () => {
         const id = await AsyncStorage.getItem('userId');
         if (!id) return;
@@ -37,7 +37,7 @@ export default function ProfileScreen() {
         fetchReservations();
     }, []);
 
-    /* ---------- Delete ---------- */
+    /* --- Delete --- */
     const handleDelete = (id: number) =>
         Alert.alert('Delete reservation?', '', [
             { text: 'Cancel', style: 'cancel' },
@@ -71,7 +71,7 @@ export default function ProfileScreen() {
                 <TouchableOpacity
                     style={styles.editBtn}
                     onPress={() =>
-                        Alert.alert('TODO', 'Implement edit modal if needed 🙂')
+                        Alert.alert('TODO', 'Implement edit modal if needed.')
                     }
                 >
                     <Text style={styles.editTxt}>Edit</Text>

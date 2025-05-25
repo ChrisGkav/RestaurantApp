@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, TextInput, Alert, ActivityIndicator, } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-/* ---------- Types ---------- */
 interface Reservation {
     reservation_id: number;
     restaurant_name: string;
@@ -13,7 +12,6 @@ interface Reservation {
     user_id: number;
 }
 
-/* ---------- Colors ---------- */
 const PURPLE = '#6933ff';
 const LIGHT_PURPLE = '#ece9ff';
 
@@ -22,14 +20,12 @@ export default function AllReservationsScreen() {
     const [loading, setLoading] = useState(true);
     const [token, setToken] = useState<string | null>(null);
     const [role, setRole] = useState<string | null>(null);
-
-    /* inline edit state */
     const [editId, setEditId] = useState<number | null>(null);
     const [editDate, setEditDate] = useState('');
     const [editTime, setEditTime] = useState('');
     const [editPeople, setEditPeople] = useState('');
 
-    /* ---------- Load token & role ---------- */
+    /* --- Load token & role --- */
     useEffect(() => {
         (async () => {
             setToken(await AsyncStorage.getItem('token'));
@@ -37,7 +33,7 @@ export default function AllReservationsScreen() {
         })();
     }, []);
 
-    /* ---------- Fetch all reservations ---------- */
+    /* --- Fetch all reservations --- */
     useEffect(() => {
         if (role !== 'admin') return; // safeguard
         (async () => {
@@ -55,7 +51,7 @@ export default function AllReservationsScreen() {
         })();
     }, [role]);
 
-    /* ---------- Delete ---------- */
+    /* --- Delete --- */
     const handleDelete = (id: number) => {
         Alert.alert('Delete reservation?', '', [
             { text: 'Cancel', style: 'cancel' },
@@ -87,7 +83,7 @@ export default function AllReservationsScreen() {
         ]);
     };
 
-    /* ---------- Start edit ---------- */
+    /* --- Start edit -- */
     const startEdit = (r: Reservation) => {
         setEditId(r.reservation_id);
         setEditDate(r.date);
@@ -95,7 +91,7 @@ export default function AllReservationsScreen() {
         setEditPeople(r.people_count.toString());
     };
 
-    /* ---------- Save edit ---------- */
+    /* --- Save edit --- */
     const saveEdit = async () => {
         if (!editId) return;
         try {
@@ -137,7 +133,7 @@ export default function AllReservationsScreen() {
         setEditPeople('');
     };
 
-    /* ---------- Render ---------- */
+    /* --- Render --- */
     if (role !== 'admin')
         return (
             <View style={styles.screen}>
@@ -156,7 +152,7 @@ export default function AllReservationsScreen() {
                 keyExtractor={i => i.reservation_id.toString()}
                 renderItem={({ item }) =>
                     editId === item.reservation_id ? (
-                        /* --------- EDIT MODE --------- */
+
                         <View style={styles.card}>
                             <Text style={styles.name}>{item.restaurant_name}</Text>
 
@@ -189,7 +185,7 @@ export default function AllReservationsScreen() {
                             </View>
                         </View>
                     ) : (
-                        /* --------- NORMAL CARD --------- */
+                        /* --- NORMAL CARD --- */
                         <View style={styles.card}>
                             <Text style={styles.name}>{item.restaurant_name}</Text>
                             <Text style={styles.rowText}>
@@ -221,7 +217,7 @@ export default function AllReservationsScreen() {
     );
 }
 
-/* ---------- Styles ---------- */
+/* --- Styles --- */
 const styles = StyleSheet.create({
     screen: { flex: 1, backgroundColor: '#f2f2f7', padding: 18 },
     title: {

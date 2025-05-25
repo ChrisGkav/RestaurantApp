@@ -7,6 +7,7 @@ const LIGHT_PURPLE = '#ece9ff';
 const { width } = Dimensions.get('window');
 const CARD_W = width * 0.9;
 
+// Creating the Sign Up Form
 export default function SignupScreen() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
