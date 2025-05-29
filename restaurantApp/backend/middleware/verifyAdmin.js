@@ -16,7 +16,7 @@ const verifyAdmin = (req, res, next) => {
       return res.status(403).json({ error: 'Access denied: Admins only' });
     }
 
-    // Optional: attach user info to request
+    // Attach user info to request
     req.user = decoded;
 
     next();

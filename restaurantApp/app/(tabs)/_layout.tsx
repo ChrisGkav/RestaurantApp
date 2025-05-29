@@ -26,6 +26,7 @@ export default function Layout() {
       <TopTabs.Screen name="profile" options={{ title: 'Profile' }} />
       <TopTabs.Screen name="login" options={{ title: 'Login' }} />
       <TopTabs.Screen name="signup" options={{ title: 'Signup' }} />
+      <TopTabs.Screen name="logout" options={{ title: 'Logout' }} />
     </TopTabs>
   );
 }

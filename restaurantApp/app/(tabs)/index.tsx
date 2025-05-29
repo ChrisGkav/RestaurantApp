@@ -17,10 +17,10 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right', 'bottom']}>
-      {/* Ensure status bar is transparent so gradient shows behind */}
+      {/* Ensuring status bar is transparent so gradient shows behind */}
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
 
-      {/* Allow status bar gestures by not intercepting touches on gradient */}
+      {/* Allowing status bar gestures by not intercepting touches on gradient */}
       <LinearGradient
         colors={[LIGHT_PURPLE, '#d6d0ff']}
         style={styles.gradient}

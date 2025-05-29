@@ -3,9 +3,7 @@ const router = express.Router();
 const connection = require('../models/db');
 const verifyAdmin = require('../middleware/verifyAdmin');
 
-/* -----------------------------------------------------------
-   1.  GET  /restaurants          (public)
------------------------------------------------------------- */
+/* Getting all restaurants. */
 router.get('/', (req, res) => {
   connection.execute('SELECT * FROM restaurants', (err, rows) => {
     if (err) {
@@ -16,9 +14,7 @@ router.get('/', (req, res) => {
   });
 });
 
-/* -----------------------------------------------------------
-   2.  POST /restaurants          (admin only)
------------------------------------------------------------- */
+/* Inserting in restaurants -Only Admin- */
 router.post('/', verifyAdmin, (req, res) => {
   const { name, location, description } = req.body;
 
@@ -42,9 +38,7 @@ router.post('/', verifyAdmin, (req, res) => {
   });
 });
 
-/* -----------------------------------------------------------
-   3.  PUT /restaurants/:id       (admin only)
------------------------------------------------------------- */
+/* Updating restaurants -Only Admin- */
 router.put('/:id', verifyAdmin, (req, res) => {
   const { id } = req.params;
   const { name, location, description } = req.body;
@@ -70,9 +64,7 @@ router.put('/:id', verifyAdmin, (req, res) => {
   });
 });
 
-/* -----------------------------------------------------------
-   4.  DELETE /restaurants/:id    (admin only)
------------------------------------------------------------- */
+/* Deleting restaurants -Only Admin- */
 router.delete('/:id', verifyAdmin, (req, res) => {
   const { id } = req.params;
 
